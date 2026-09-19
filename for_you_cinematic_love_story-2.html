@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>একটি গল্প, শুধু তোমার জন্য ♡</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box}
+:root{--ink:#39252d;--rose:#c94f73;--soft:#fff7f4}
+body{margin:0;min-height:100vh;background:#181218;color:var(--ink);font-family:'Noto Serif Bengali',serif;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.book{width:min(94vw,560px);height:min(94vh,820px);position:relative;background:var(--soft);overflow:hidden;box-shadow:0 30px 90px #0008;border-radius:26px}
+.page{position:absolute;inset:0;padding:48px 30px 35px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0;pointer-events:none;transform:scale(1.04);transition:opacity .75s,transform .75s}
+.page.active{opacity:1;pointer-events:auto;transform:scale(1)}
+.bg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 15% 15%,#ffd6df 0 2%,transparent 3%),radial-gradient(circle at 85% 80%,#ffe2d1 0 2%,transparent 3%)}
+.noise{position:absolute;inset:0;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.kicker{letter-spacing:4px;font-size:12px;color:#a15d72;text-transform:uppercase;margin-bottom:13px}
+h1{font-size:clamp(30px,8vw,48px);line-height:1.25;margin:5px 0 18px;font-weight:700}
+h2{font-size:27px;margin:10px 0}
+p{font-size:17px;line-height:2;margin:7px 0}
+.script{font-size:23px;color:var(--rose);line-height:1.8}
+.heart{font-size:78px;filter:drop-shadow(0 12px 15px #d75c7a44);animation:pulse 1.7s infinite}
+.art{width:210px;height:170px;display:flex;align-items:center;justify-content:center;font-size:90px;position:relative;margin:0 auto 15px}
+.art:after{content:"";position:absolute;width:170px;height:22px;background:#dba9a455;border-radius:50%;bottom:5px;z-index:0}
+.art span{position:relative;z-index:1;animation:float 3s ease-in-out infinite}
+.note{background:#fff;border:1px solid #efd6dc;padding:22px;border-radius:20px;box-shadow:0 12px 35px #a74b6512;margin:15px 0;width:100%}
+.divider{display:flex;align-items:center;gap:12px;width:100%;justify-content:center;margin:13px 0;color:#c56a83}
+.divider:before,.divider:after{content:"";height:1px;background:#e9bec9;width:70px}
+button{font-family:inherit;border:0;cursor:pointer;border-radius:999px;padding:13px 24px;margin:10px 5px;font-size:16px;transition:.25s}
+.primary{background:#c94f73;color:#fff;box-shadow:0 10px 25px #c94f7340}.ghost{background:#fff;color:#8b4d61;border:1px solid #e5c2cc}
+button:hover{transform:translateY(-3px)}
+.dots{position:absolute;bottom:16px;left:0;right:0;text-align:center;z-index:5}.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#e3c0ca;margin:0 4px;transition:.3s}.dot.on{width:20px;border-radius:8px;background:#c94f73}
+.corner{position:absolute;top:20px;right:22px;color:#c47b90;font-size:20px}
+.choice{min-height:60px}.choice .yes{background:#d8587e;color:#fff}.choice .no{background:#f2e8eb;color:#745763}
+#final h1{color:#bd466b}
+.signature{margin-top:18px;font-size:14px;color:#9a6878;letter-spacing:1px}
+.confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-20px;font-style:normal;animation:fall 5s linear infinite}
+@keyframes pulse{50%{transform:scale(1.09)}}@keyframes float{50%{transform:translateY(-10px) rotate(-2deg)}}@keyframes fall{to{transform:translateY(850px) rotate(500deg);opacity:0}}
+@media(max-height:650px){.book{height:96vh}.page{padding-top:30px}.art{height:120px;font-size:65px}p{font-size:15px}}
+
+.walkers{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+.walker{position:absolute;display:flex;align-items:center;gap:5px;opacity:.9;filter:drop-shadow(0 5px 5px #8e4c5b18)}
+.walker .char{font-size:31px;animation:tinywalk .8s ease-in-out infinite alternate}
+.board{font-family:'Noto Serif Bengali',serif;font-size:9px;line-height:1.1;color:#77485a;background:#fffaf2;border:1px solid #e2bdc8;border-radius:5px;padding:5px 7px;box-shadow:2px 3px 8px #7b46551c;white-space:nowrap}
+.w1{left:-95px;top:8%;animation:walkAcross 17s linear infinite}
+.w2{right:-125px;top:31%;flex-direction:row-reverse;animation:walkBack 20s linear infinite 2s}
+.w3{left:-100px;bottom:17%;animation:walkAcross 22s linear infinite 5s}
+.w4{right:-110px;bottom:8%;flex-direction:row-reverse;animation:walkBack 18s linear infinite 7s}
+@keyframes walkAcross{0%{transform:translateX(0)}100%{transform:translateX(700px)}}
+@keyframes walkBack{0%{transform:translateX(0)}100%{transform:translateX(-700px)}}
+@keyframes tinywalk{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-4px) rotate(2deg)}}
+</style>
+</head>
+<body>
+<div class="book">
+<div class="bg"></div><div class="noise"></div><div class="corner">♡</div>
+
+<section class="page active" id="p1">
+ <div class="kicker">A little secret</div>
+ <div class="heart">♡</div>
+ <h1>তোমার জন্য<br>একটা গল্প আছে...</h1>
+ <p class="script">যেটা কোনো বইয়ে লেখা নেই,<br>শুধু আমার হৃদয়ে লেখা।</p>
+ <button class="primary" onclick="go(2)">গল্পটা শুরু করি →</button>
+</section>
+
+<section class="page" id="p2">
+ <div class="kicker">Chapter 01 · The beginning</div>
+ <div class="art"><span>🧸🌷</span></div>
+ <h2>কখন যে তুমি<br>“কেউ একজন” থেকে “আমার মানুষ” হয়ে গেলে...</h2>
+ <div class="divider">✦</div>
+ <p>সেটা ঠিক মনে নেই।<br>শুধু মনে আছে—একদিন বুঝলাম,<br><b>তোমার একটা ছোট্ট মেসেজও আমার পুরো দিনটা বদলে দিতে পারে।</b></p>
+ <button class="primary" onclick="go(3)">তারপর কী হলো? ♡</button>
+</section>
+
+
+<section class="page" id="memory">
+ <div class="kicker">Our little memory · 20.09.2024</div>
+ <div class="heart" style="font-size:64px;">♡</div>
+ <p style="font-size:13px;letter-spacing:3px;color:#a15d72;margin-bottom:5px;">THE DAY OUR STORY BEGAN</p>
+ <h1 style="font-size:38px;margin:3px 0 8px;">MUNNAF<br><span style="color:#c94f73;font-size:25px;">♡</span><br>MUSFIKA</h1>
+ <div class="divider">✦</div>
+ <div class="note" style="padding:20px 15px;">
+   <p style="font-size:22px;color:#c94f73;"><b>20 · 09 · 2024</b></p>
+   <p>যেদিন থেকে আমাদের গল্পটা<br>একটু একটু করে নিজের একটা নাম পেল।</p>
+   <p class="script" style="font-size:19px;">Clg rls ♡</p>
+ </div>
+ <p style="font-size:14px;color:#916577;">একটা তারিখ, দুইটা নাম,<br>আর অসংখ্য স্মৃতির শুরু। 🌷</p>
+ <button class="primary" onclick="go(4)">গল্পটা এগিয়ে যাক →</button>
+</section>
+
+<section class="page" id="p3">
+ <div class="kicker">Chapter 02 · You</div>
+ <div class="art"><span>🐰💐</span></div>
+ <h2>তোমার মধ্যে এমন কী আছে?</h2>
+ <div class="note">
+  <p>হয়তো তোমার হাসি।<br>হয়তো তোমার অভিমান।<br>হয়তো তোমার সেই ছোট ছোট কথাগুলো।</p>
+  <p class="script">নাকি... তুমি শুধু তুমিই বলেই? ❤️</p>
+ </div>
+ <button class="primary" onclick="go(5)">একটা সত্যি কথা বলি →</button>
+</section>
+
+<section class="page" id="p4">
+ <div class="kicker">Chapter 03 · From my heart</div>
+ <div class="heart">♥</div>
+ <div class="note">
+ <p>“ভালোবাসা হয়তো খুব বড় কোনো প্রতিশ্রুতির নাম নয়।<br>
+ কখনো কখনো ভালোবাসা মানে—<br>
+ <b>একজন মানুষকে প্রতিদিন নতুন করে বেছে নেওয়া।</b>”</p>
+ </div>
+ <p>আর আমি চাই,<br>প্রতিদিন তোমাকেই বেছে নিতে।</p>
+ <button class="primary" onclick="go(6)">শেষ কথাটা... 💌</button>
+</section>
+
+<section class="page" id="p5">
+ <div class="kicker">One last question</div>
+ <div class="art"><span>🧸 ❤️ 🐰</span></div>
+ <h1>আমার গল্পে<br>তুমি থাকবে?</h1>
+ <p>শুধু আজ নয়...<br>আগামী দিনের পাতাগুলোতেও?</p>
+ <div class="choice">
+  <button class="yes" onclick="go(7)">থাকব ❤️</button>
+  <button class="no" onclick="nope()">একটু ভাবি 🙈</button>
+ </div>
+ <p id="msg" class="signature"></p>
+</section>
+
+<section class="page" id="p6" style="justify-content:flex-start;overflow-y:auto;text-align:left;padding:38px 24px 65px;">
+ <div style="width:100%;text-align:center;">
+  <div class="heart">💗</div>
+  <div class="kicker">Chapter 06 · Our story continues</div>
+  <h1 id="final" style="font-size:34px;text-align:center;">তাহলে এসো,<br>একসাথে গল্প লিখি।</h1>
+  <div class="divider">✦ ♡ ✦</div>
+ </div>
+
+ <div class="note" style="text-align:left;padding:22px 20px;">
+  <p>আজ আমাদের ভালোবাসার আরও একটি বছর পূর্ণ হলো—সময় কতটা পেরিয়ে গেল, কখনো কখনো ভাবলে সত্যিই অবাক লাগে।</p>
+  <p>তোমাকে ভালোবাসার গল্পটা আমার কাছে শুধু কিছু সুন্দর মুহূর্তের সমষ্টি নয়; এর ভেতরে আছে অসংখ্য অনুভূতি, অভিমান, অপেক্ষা আর একে অপরকে বুঝে নেওয়ার ছোট ছোট গল্প।</p>
+  <p>তুমি আমার জীবনে আসার পর বুঝেছি, ভালোবাসা মানে শুধু কাউকে নিজের করে পাওয়া নয়, বরং তার হাসি-কান্না, নীরবতা আর অসম্পূর্ণতাগুলোকেও আপন করে নেওয়া।</p>
+  <p>সবসময় হয়তো তোমাকে আমার মনের কথাগুলো ঠিকভাবে বলতে পারি না, কিন্তু সত্যিটা হলো—আমার অনেক না-বলা কথার শেষটুকুতেও তুমি জড়িয়ে আছো।</p>
+  <p>জীবন সবসময় আমাদের ইচ্ছেমতো হবে না, কখনো দূরত্ব আসবে, কখনো অভিমান; তবুও আমি চাই, প্রতিটি কঠিন সময়ের শেষে আমরা আবার একে অপরের কাছেই ফিরে আসি।</p>
+  <p>তোমার সঙ্গে কাটানো সময় আমাকে শিখিয়েছে, একজন মানুষ শুধু ভালোবাসার মানুষই নয়, একই সঙ্গে কারও শান্তির জায়গাও হয়ে উঠতে পারে।</p>
+  <p>তুমি আমার কাছে ঠিক তেমনই—ব্যস্ততার ভিড়ে একটুখানি শান্তি, অস্থিরতার মাঝে একটুখানি নিশ্চয়তা।</p>
+  <p>আমি ভবিষ্যৎ সম্পর্কে বড় বড় প্রতিশ্রুতি দিতে চাই না; শুধু চাই, সময় যতই বদলাক, তোমার প্রতি আমার যত্ন আর সম্মানটা যেন একই রকম থাকে।</p>
+  <p>যদি আবার নতুন করে জীবন শুরু করার সুযোগ পেতাম, আমি হয়তো একই পথেই হাঁটতাম—কারণ সেই পথের সবচেয়ে সুন্দর প্রাপ্তিটা ছিলে তুমি।</p>
+ </div>
+
+ <div style="width:100%;text-align:center;margin-top:10px;">
+  <div class="divider">♡</div>
+  <p class="script">আজকের দিনে শুধু এটুকুই বলতে চাই—</p>
+ </div>
+
+ <div class="note" style="text-align:left;padding:22px 20px;">
+  <p>তোমাকে ভালোবাসা আমার জীবনের কোনো ক্ষণিক অনুভূতি নয়, বরং আমার হৃদয়ে ধীরে ধীরে গড়ে ওঠা এক গভীর সত্য।</p>
+  <p>আমি জানি, আমাদের পথ সবসময় মসৃণ হবে না; তবুও প্রতিটি কঠিন পথ তোমার হাতটা ধরে পেরিয়ে যেতে চাই।</p>
+  <p>তোমার প্রতি আমার অনুভূতিগুলো হয়তো সবসময় শব্দে প্রকাশ করতে পারি না, কিন্তু আমার নীরবতার অনেকটা জুড়েই তুমি আছো।</p>
+  <p>তুমি আমার জীবনের এমন এক গল্প, যার কোনো সুন্দর সমাপ্তি আমি চাই না—চাই শুধু প্রতিটি অধ্যায় তোমাকে নিয়েই লিখতে।</p>
+ </div>
+
+ <div style="width:100%;text-align:center;margin-top:14px;">
+  <div class="divider">✦ ♡ ✦</div>
+  <p class="script">যদি ভালোবাসার কোনো শেষ পৃষ্ঠা থাকে,</p>
+ </div>
+
+ <div class="note" style="text-align:center;padding:25px 18px;">
+  <p>যদি ভালোবাসার কোনো শেষ পৃষ্ঠা থাকে,<br>
+  তবে সেখানে কোনো বিদায় লিখতে চাই না;<br>
+  শুধু লিখে রাখতে চাই—</p>
+  <p class="script">“এখানেও দু’জন মানুষ পাশাপাশি ছিল।”</p>
+  <p>তুমি এসেছিলে হঠাৎ কোনো ঋতুর মতো,<br>
+  অথচ থেকে গেলে আমার সমস্ত ঋতুর অর্থ হয়ে।</p>
+ </div>
+
+ <div style="width:100%;text-align:center;padding:10px 0 18px;">
+  <div class="art" style="height:115px;"><span>🧸 ❤️ 🐰</span></div>
+  <p class="script">তুমি আমার সবচেয়ে সুন্দর অধ্যায়।</p>
+  <p><b>আর এই গল্পের শেষ চাই না—<br>চাই, পরের পাতাটাও আমরা একসাথে লিখি।</b></p>
+  <div class="signature">— শুধু তোমার জন্য, হৃদয় থেকে ♡</div>
+ </div>
+</section>
+
+
+<div class="walkers">
+  <div class="walker w1"><span class="board">ভালোবাসা ♡</span><span class="char">🧸</span></div>
+  <div class="walker w2"><span class="board">তুমি আমার শান্তি</span><span class="char">🐰</span></div>
+  <div class="walker w3"><span class="board">চিরদিন ✦</span><span class="char">🧸</span></div>
+  <div class="walker w4"><span class="board">শুধু তুমি ♡</span><span class="char">🐰</span></div>
+</div>
+
+<div class="dots" id="dots"></div>
+</div>
+<script>
+let cur=1,total=7;
+const dots=document.getElementById('dots');
+for(let i=1;i<=total;i++){let d=document.createElement('i');d.className='dot '+(i===1?'on':'');dots.appendChild(d)}
+function go(n){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ const target = n===3 ? document.getElementById('memory') : document.getElementById('p'+(n>3?n-1:n));
+ target.classList.add('active');
+ [...dots.children].forEach((d,i)=>d.classList.toggle('on',i===n-1));
+ cur=n;
+ if(n===7) makeConfetti();
+}
+function nope(){document.getElementById('msg').textContent='ভাবতে পারো... কিন্তু মনটা যেন “হ্যাঁ” বলেই ফেলে 🥹❤️';}
+function makeConfetti(){
+ const box=document.getElementById('confetti');
+ ['♡','✦','♥','✿','♡','✨','♥','✦'].forEach((x,i)=>{
+  let e=document.createElement('i');e.textContent=x;e.style.left=(5+i*12)+'%';e.style.animationDelay=(i*.25)+'s';e.style.fontSize=(14+i%3*6)+'px';box.appendChild(e)
+ });
+}
+</script>
+</body>
+</html>
